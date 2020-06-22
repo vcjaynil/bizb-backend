@@ -92,7 +92,6 @@ class UserRepository implements UserInterface
                     $userData['id'] = $user->id;
                     $userData['name'] = $user->name;
                     $userData['email'] = $user->email;
-                    $userData['mobile'] = $user->mobile;
 
                     $response['token'] = $token->plainTextToken;
                     $response['user'] = $userData;
@@ -141,7 +140,6 @@ class UserRepository implements UserInterface
                     $userData['id'] = $user->id;
                     $userData['name'] = $user->name;
                     $userData['email'] = $user->email;
-                    $userData['mobile'] = $user->mobile;
 
                     $response['token'] = $token->plainTextToken;
                     $response['user'] = $userData;
@@ -238,15 +236,11 @@ class UserRepository implements UserInterface
                 //event for sending mail of email verification
                 event(new \App\Events\Frontend\Auth\UserConfirmation($user, $otp));
 
-                //Creating token for authentication
-                $token = $user->createToken('app-token');
-
+                //User detail
                 $userDetail['id'] = $user->id;
                 $userDetail['name'] = $user->name;
                 $userDetail['email'] = $user->email;
-                $userDetail['mobile'] = $user->mobile;
 
-                $responseData['token'] = $token->plainTextToken;
                 $responseData['user'] = $userDetail;
                 $responseData['message'] = trans('auth.registration_success');
                 $responseData['status'] = 200;
@@ -291,7 +285,15 @@ class UserRepository implements UserInterface
                 addUserSingleMetaValue($user->id,'confirmed_at',Carbon::now()->format('Y-m-d H:i:s'));//Adding confirmation time&date
 
                 event(new \App\Events\Frontend\Auth\UserWelcome($user));//Sending welcome mail after confirmation
+                //Creating token for authentication
+                $token = $user->createToken('app-token');
 
+                $userDetail['id'] = $user->id;
+                $userDetail['name'] = $user->name;
+                $userDetail['email'] = $user->email;
+
+                $response['token'] = $token->plainTextToken;
+                $response['user'] = $userDetail;
                 $response['status'] = 200;
                 $response['message'] = trans('auth.otp.verification_success');
                 $response['success'] = true;
@@ -386,7 +388,6 @@ class UserRepository implements UserInterface
                     $userData['id'] = $user->id;
                     $userData['name'] = $user->name;
                     $userData['email'] = $user->email;
-                    $userData['mobile'] = $user->mobile;
                     $userData['username'] = $user->username;
                 } else { // Insert as new user
                     $user = $this->findByEmail($data['email']);
@@ -433,7 +434,6 @@ class UserRepository implements UserInterface
                     $userData['id'] = $user->id;
                     $userData['name'] = $user->name;
                     $userData['email'] = $user->email;
-                    $userData['mobile'] = $user->mobile;
                     $userData['username'] = $user->username;
                 }
 
@@ -475,7 +475,6 @@ class UserRepository implements UserInterface
                 $data['id'] = $user->id;
                 $data['name'] = $user->name;
                 $data['email'] = $user->email;
-                $data['mobile'] = $user->mobile;
 
                 $response['user'] = $data;
                 $response['status'] = 200;
@@ -550,7 +549,7 @@ class UserRepository implements UserInterface
         $response = [];
 
         try {
-            $user = $this->findByEmail($data['email']);
+            $user = loggedInUser();
 
             //Check user available or not
             if ($user) {
@@ -588,7 +587,7 @@ class UserRepository implements UserInterface
         $response = [];
 
         try {
-            $user = $this->findByEmail($data['email']);
+            $user = loggedInUser();
 
             //Check user available or not
             if ($user) {
@@ -741,7 +740,7 @@ class UserRepository implements UserInterface
                     $response['message'] = trans('auth.forgot_password.reset_password_successful');
                     $response['success'] = true;
                 } else {
-                    $response['status'] = 200;
+                    $response['status'] = 401;
                     $response['message'] = trans('auth.forgot_password.reset_password_failed');
                     $response['success'] = false;
                 }

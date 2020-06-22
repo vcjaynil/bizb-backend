@@ -12,6 +12,7 @@ return [
     'app_store' => 'App Store',
     'email_subject_label' => [
         'welcome' => 'Welcome',
-        'forget_password_otp' => 'Forget Password OTP'
+        'forget_password_otp' => 'Forget Password OTP',
+        'otp_email_verification' => 'OTP-Email Verification',
     ]
 ];

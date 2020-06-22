@@ -31,7 +31,7 @@ class UserController extends APIController
      * @author Jaynil Parekh
      * @since 2020-06-09
      *
-     * Change password.
+     * Get User Detail.
      *
      */
     public function getUserDetail()
@@ -66,7 +66,7 @@ class UserController extends APIController
 
             $validation = Validator::make($request->all(), [
                 'current_password' => 'required',
-                'password' => 'required',
+                'password' => 'required|min:6|max:15|confirmed|regex:"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,15}$"',
             ]);
 
             if ($validation->fails()) {
@@ -99,8 +99,8 @@ class UserController extends APIController
         try {
 
             $validation = Validator::make($request->all(), [
-                'email' => 'required',
                 'mpin' => 'required|max:4',
+                'confirm_mpin' => 'required|max:4|same:mpin',
             ]);
 
             if ($validation->fails()) {
@@ -132,7 +132,6 @@ class UserController extends APIController
         try {
 
             $validation = Validator::make($request->all(), [
-                'email' => 'required',
                 'old_mpin' => 'required|max:4',
                 'mpin' => 'required|max:4',
                 'confirm_mpin' => 'required|max:4|same:mpin',

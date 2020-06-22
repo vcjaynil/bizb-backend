@@ -80,7 +80,7 @@
         "nunomaduro/collision": "^5.0",
         "nunomaduro/larastan": "^0.5.5",
         "nunomaduro/phpinsights": "^1.14",
-        "pestphp/pest": "^0.1.5",
+        "pestphp/pest": "^0.2",
         "phpunit/phpunit": "^9.0",
         "spatie/pest-plugin-snapshots": "dev-master",
         "vemcogroup/laravel-translation": "^2.0",

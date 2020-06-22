@@ -46,7 +46,7 @@ class UserEventListener
         );
 
         $events->listen(
-            \App\Events\Frontend\Auth\UserConfirmation::class,
+            \App\Events\Frontend\Auth\UserWelcome::class,
             'App\Listeners\Frontend\Auth\UserEventListener@onNeedsWelcome'
         );
     }

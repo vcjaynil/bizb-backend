@@ -23,7 +23,7 @@ class UserConfirmEmail extends Mailable
     {
         $this->user = $user;
         $this->otp = $otp;
-        $this->subject = 'OTP-Email Verification';
+        $this->subject = trans('email.email_subject_label.otp_email_verification');
     }
 
     /**

@@ -24,7 +24,7 @@ class SendUserWelcomeEmail extends Mailable
     public function __construct($user)
     {
         $this->user = $user;
-        $this->subject = trans('email.subject.welcome');
+        $this->subject = trans('email.email_subject_label.welcome');
     }
 
     /**
@@ -35,7 +35,7 @@ class SendUserWelcomeEmail extends Mailable
     public function build()
     {
         return $this->subject($this->subject)
-            ->view('frontend.mail.user_welcome')
+            ->view('frontend.mail.welcome')
             ->with([
                 'user'  => $this->user
             ]);

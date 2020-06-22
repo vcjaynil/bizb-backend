@@ -99,7 +99,7 @@ class AuthController extends APIController
             $validation = Validator::make($request->all(), [
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users',
-                'password' => 'required|min:8|max:15|confirmed|regex:"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,15}$"',
+                'password' => 'required|min:6|max:15|confirmed|regex:"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,15}$"',
             ]);
 
             if ($validation->fails()) {
@@ -304,7 +304,7 @@ class AuthController extends APIController
         try {
             $validation = Validator::make($request->all(), [
                 'email' => 'required',
-                'password' => 'required|min:8|max:15|confirmed|regex:"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,15}$"',
+                'password' => 'required|min:6|max:15|confirmed|regex:"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,15}$"',
             ]);
 
             if ($validation->fails()) {
