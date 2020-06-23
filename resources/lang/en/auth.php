@@ -26,13 +26,14 @@ return [
         'mpin_generate_success' => 'Pin generate successfully!',
         'mpin_update_success' => 'Pin updated successfully!',
         'old_mpin_wrong' => 'Old Pin is wrong!',
+        'otp_mpin_wrong' => 'Otp is wrong!',
     ],
 
     'otp' => [
         'sent_success' => 'OTP sent successfully!',
         'invalid' => 'Invalid OTP!',
         'verification_success' => 'OTP verification successful!',
-        'old_mpin_wrong' => 'Old Mpin is wrong!',
+        'old_mpin_wrong' => 'Old pin is wrong!',
     ],
 
     'social_media' => [
@@ -51,5 +52,13 @@ return [
         'invalid_otp' => 'Invalid OTP!',
         'reset_password_successful' => 'Password reset successfully!',
         'reset_password_failed' => 'Password reset failed!',
+    ],
+
+    'forgot_mpin' => [
+        'otp_sent_successful' => 'OTP Sent successfully to your mail!',
+        'otp_verification_successful' => 'OTP verification successful!',
+        'invalid_otp' => 'Invalid OTP!',
+        'mpin_update_success' => 'Pin reset successfully!',
+        'reset_pin_failed' => 'Pin reset failed!',
     ],
 ];

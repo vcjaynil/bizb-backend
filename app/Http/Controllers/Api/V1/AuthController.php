@@ -320,4 +320,73 @@ class AuthController extends APIController
         }
         return $this->respond($response);
     }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @author Jaynil Parekh
+     * @since 2020-06-22
+     *
+     * Forgot Mpin
+     *
+     */
+    public function forgotMpin(Request $request)
+    {
+
+        $response = [];
+
+        try{
+            $validation = Validator::make($request->all(), [
+                'email' => 'required',
+            ]);
+
+            if ($validation->fails()) {
+                return $this->throwValidation($validation->messages()->first());
+            }
+
+            $response = $this->userRepo->forgotMpin($request->all());
+            $this->setStatusCode($response['status']);
+            unset($response['status']);
+        } catch (\Exception $ex) {
+            $response['message'] = $ex->getMessage();
+            $response['success'] = false;
+            $this->setStatusCode(403);
+        }
+        return $this->respond($response);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @author Jaynil Parekh
+     * @since 2020-06-22
+     *
+     * Reset Mpin
+     *
+     */
+    public function resetMpin(Request $request)
+    {
+        $response = [];
+
+        try{
+            $validation = Validator::make($request->all(), [
+                'email' => 'required',
+                'otp' => 'required',
+                'mpin' => 'required|max:4',
+                'confirm_mpin' => 'required|max:4|same:mpin',
+            ]);
+
+            if ($validation->fails()) {
+                return $this->throwValidation($validation->messages()->first());
+            }
+            $response = $this->userRepo->resetMpin($request->all());
+            $this->setStatusCode($response['status']);
+            unset($response['status']);
+        } catch (\Exception $ex) {
+            $response['message'] = $ex->getMessage();
+            $response['success'] = false;
+            $this->setStatusCode(403);
+        }
+        return $this->respond($response);
+    }
 }

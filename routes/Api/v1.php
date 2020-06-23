@@ -15,6 +15,8 @@
 Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1', 'as' => 'v1.'], function () {
     Route::post('login','AuthController@login');
     Route::post('mpin-login','AuthController@mPinLogin');
+    Route::post('forgot-mpin','AuthController@forgotMpin');
+    Route::post('reset-mpin','AuthController@resetMpin');
     Route::post('register','AuthController@register');
     Route::post('email-verification','AuthController@confirmOtp');
     Route::post('resend-otp','AuthController@resendOtp');

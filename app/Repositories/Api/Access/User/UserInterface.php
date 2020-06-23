@@ -35,4 +35,9 @@ interface UserInterface
     public function confirmOtpForForgotPassword(array $data);
 
     public function resetPassword(array $data);
+
+    public function forgotMpin(array $data);
+
+    public function resetMpin(array $data);
+
 }

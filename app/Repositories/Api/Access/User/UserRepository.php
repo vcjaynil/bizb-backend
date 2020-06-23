@@ -757,4 +757,97 @@ class UserRepository implements UserInterface
         }
         return $response;
     }
+
+    /**
+     *
+     * @param array $data
+     * @return array
+     * @author Jaynil Parekh
+     * @since 2020-06-22
+     *
+     * Forgot Password.
+     *
+     */
+    public function forgotMpin(array $data)
+    {
+        $response = [];
+
+        try {
+            $user = $this->findByEmail($data['email']);
+
+            if ($user) {
+
+                $otp = generateOtp();
+
+                $availableForgotPinCode = getUserMetaValue($user->id,'forgot_pin_code');
+
+                if(empty($availableForgotPinCode)) {
+                    //Adding details to user meta
+                    addUserSingleMetaValue($user->id,'forgot_pin_code',bcrypt($otp));
+                } else {
+                    //Update otp of four digit pin confirmation
+                    updateUserMetaValue($user->id,'forgot_pin_code',bcrypt($otp));
+                }
+
+                //event for sending mail of email verification
+                event(new \App\Events\Frontend\Auth\UserForgotPin($user, $otp));
+
+                $response['status'] = 200;
+                $response['message'] = trans('auth.forgot_mpin.otp_sent_successful');
+                $response['success'] = true;
+            } else {
+                $response['status'] = 401;
+                $response['message'] = trans('auth.forgot_password.reset_password_failed');
+                $response['success'] = false;
+            }
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            $response['status'] = 403;
+            $response['message'] = trans('auth.something_went_wrong');
+            $response['success'] = false;
+        }
+        return $response;
+    }
+
+    /**
+     *
+     * @param array $data
+     * @return array
+     * @author Jaynil Parekh
+     * @since 2020-06-22
+     *
+     * Reset four digit pin.
+     *
+     */
+    public function resetMpin(array $data)
+    {
+        $response = [];
+
+        try {
+
+            $user = $this->findByEmail($data['email']);
+            $originalOtp = getUserMetaValue($user->id,'forgot_pin_code');
+
+            //Check user available or not
+            if ($user && !empty($originalOtp) && Hash::check($data['otp'], $originalOtp)) {
+
+                removeUserMetaValue($user->id, 'forgot_pin_code');
+
+                //Update pin
+                updateUserMetaValue($user->id, 'mpin', bcrypt($data['mpin']));
+
+                $response['status'] = 200;
+                $response['message'] = trans('auth.forgot_mpin.mpin_update_success');
+            } else {
+                $response['status'] = 400;
+                $response['message'] = trans('auth.forgot_mpin.invalid_otp');
+            }
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            $response['status'] = 403;
+            $response['message'] = trans('auth.reset_pin_failed');
+        }
+
+        return $response;
+    }
 }
