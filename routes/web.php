@@ -12,6 +12,14 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//Route::get('email-template',function (){
+//   $user = \App\Models\User::find(3);
+//   $otp = 12345;
+//
+//   return view('frontend.mail.welcome',compact('user','otp'));
+//});
+
 Route::group(['middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
     /*
     * Frontend Routes

@@ -7,23 +7,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendForgotPasswordOtpEmail extends Mailable
+class SendChangePinDetailEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $user;
-    protected $otp;
+    private $user;
 
     /**
-     * SendForgotPasswordOtpEmail constructor.
+     * SendChangePinDetailEmail constructor.
      * @param $user
-     * @param $otp
      */
-    public function __construct($user, $otp)
+    public function __construct($user)
     {
         $this->user = $user;
-        $this->otp = $otp;
-        $this->subject = trans('email.email_subject_label.forget_password_otp');
+        $this->subject = trans('email.email_subject_label.change_pin_detail');
     }
 
     /**
@@ -33,11 +30,11 @@ class SendForgotPasswordOtpEmail extends Mailable
      */
     public function build()
     {
+
         return $this->subject($this->subject)
-            ->view('frontend.mail.forgot_password_otp')
+            ->view('frontend.mail.change_pin')
             ->with([
-                'user' => $this->user,
-                'otp' => $this->otp
+                'user' => $this->user
             ]);
     }
 }

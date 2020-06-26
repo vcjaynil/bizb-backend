@@ -92,6 +92,7 @@ class UserRepository implements UserInterface
                     $userData['id'] = $user->id;
                     $userData['name'] = $user->name;
                     $userData['email'] = $user->email;
+                    $userData['type'] = $user->type;
 
                     $response['token'] = $token->plainTextToken;
                     $response['user'] = $userData;
@@ -140,6 +141,7 @@ class UserRepository implements UserInterface
                     $userData['id'] = $user->id;
                     $userData['name'] = $user->name;
                     $userData['email'] = $user->email;
+                    $userData['type'] = $user->type;
 
                     $response['token'] = $token->plainTextToken;
                     $response['user'] = $userData;
@@ -208,6 +210,7 @@ class UserRepository implements UserInterface
             $userData['name'] = $data['name'] ?? null;
             $userData['mobile'] = $data['mobile'] ?? null;
             $userData['password'] = bcrypt($data['password']) ?? null;
+            $userData['type'] = bcrypt($data['type']);
             $userData['username'] = generateUsername($data['name']);
 
             if ($user = $this->model->create($userData)) {
@@ -240,6 +243,7 @@ class UserRepository implements UserInterface
                 $userDetail['id'] = $user->id;
                 $userDetail['name'] = $user->name;
                 $userDetail['email'] = $user->email;
+                $userDetail['type'] = $user->type;
 
                 $responseData['user'] = $userDetail;
                 $responseData['message'] = trans('auth.registration_success');
@@ -282,7 +286,7 @@ class UserRepository implements UserInterface
                 $user->save();
 
                 removeUserMetaValue($user->id, 'confirmation_code');//Remove confirmation code
-                addUserSingleMetaValue($user->id,'confirmed_at',Carbon::now()->format('Y-m-d H:i:s'));//Adding confirmation time&date
+                addUserSingleMetaValue($user->id, 'confirmed_at', Carbon::now()->format('Y-m-d H:i:s'));//Adding confirmation time&date
 
                 event(new \App\Events\Frontend\Auth\UserWelcome($user));//Sending welcome mail after confirmation
                 //Creating token for authentication
@@ -291,6 +295,7 @@ class UserRepository implements UserInterface
                 $userDetail['id'] = $user->id;
                 $userDetail['name'] = $user->name;
                 $userDetail['email'] = $user->email;
+                $userDetail['type'] = $user->type;
 
                 $response['token'] = $token->plainTextToken;
                 $response['user'] = $userDetail;
@@ -389,6 +394,7 @@ class UserRepository implements UserInterface
                     $userData['name'] = $user->name;
                     $userData['email'] = $user->email;
                     $userData['username'] = $user->username;
+                    $userData['type'] = $user->type;
                 } else { // Insert as new user
                     $user = $this->findByEmail($data['email']);
 
@@ -398,6 +404,7 @@ class UserRepository implements UserInterface
                             'email' => $user_email,
                             'name' => $data['name'],
                             'username' => generateUsername($data['name']),
+                            'type' => $data['type'],
                             'email_verified_at' => date('Y-m-d H:i:s'),
                         ])->assignRole('user');
 
@@ -435,6 +442,7 @@ class UserRepository implements UserInterface
                     $userData['name'] = $user->name;
                     $userData['email'] = $user->email;
                     $userData['username'] = $user->username;
+                    $userData['type'] = $user->type;
                 }
 
                 $responseData['token'] = $token->plainTextToken;
@@ -475,6 +483,7 @@ class UserRepository implements UserInterface
                 $data['id'] = $user->id;
                 $data['name'] = $user->name;
                 $data['email'] = $user->email;
+                $data['type'] = $user->type;
 
                 $response['user'] = $data;
                 $response['status'] = 200;
@@ -519,6 +528,10 @@ class UserRepository implements UserInterface
                 $user->password = bcrypt($data['password']);
 
                 if ($user->save()) {
+
+                    //event for sending mail of email verification
+                    event(new \App\Events\Frontend\Auth\UserChangePassword($user));
+
                     $response['status'] = 200;
                     $response['message'] = trans('auth.change_password.update_success');
                 }
@@ -599,6 +612,9 @@ class UserRepository implements UserInterface
 
                     //Update new mpin
                     updateUserMetaValue($user->id, 'mpin', bcrypt($data['mpin']));
+
+                    //event for sending mail of password reset confirmation
+                    event(new \App\Events\Frontend\Auth\UserChangePin($user));
 
                     $response['status'] = 200;
                     $response['message'] = trans('auth.mpin.mpin_update_success');
@@ -736,6 +752,10 @@ class UserRepository implements UserInterface
                 $user->password = bcrypt($data['password']);
 
                 if ($user->save()) {
+
+                    //event for sending mail of password reset confirmation
+                    event(new \App\Events\Frontend\Auth\UserChangePassword($user));
+
                     $response['status'] = 200;
                     $response['message'] = trans('auth.forgot_password.reset_password_successful');
                     $response['success'] = true;
@@ -779,14 +799,14 @@ class UserRepository implements UserInterface
 
                 $otp = generateOtp();
 
-                $availableForgotPinCode = getUserMetaValue($user->id,'forgot_pin_code');
+                $availableForgotPinCode = getUserMetaValue($user->id, 'forgot_pin_code');
 
-                if(empty($availableForgotPinCode)) {
+                if (empty($availableForgotPinCode)) {
                     //Adding details to user meta
-                    addUserSingleMetaValue($user->id,'forgot_pin_code',bcrypt($otp));
+                    addUserSingleMetaValue($user->id, 'forgot_pin_code', bcrypt($otp));
                 } else {
                     //Update otp of four digit pin confirmation
-                    updateUserMetaValue($user->id,'forgot_pin_code',bcrypt($otp));
+                    updateUserMetaValue($user->id, 'forgot_pin_code', bcrypt($otp));
                 }
 
                 //event for sending mail of email verification
@@ -826,7 +846,7 @@ class UserRepository implements UserInterface
         try {
 
             $user = $this->findByEmail($data['email']);
-            $originalOtp = getUserMetaValue($user->id,'forgot_pin_code');
+            $originalOtp = getUserMetaValue($user->id, 'forgot_pin_code');
 
             //Check user available or not
             if ($user && !empty($originalOtp) && Hash::check($data['otp'], $originalOtp)) {
@@ -836,6 +856,9 @@ class UserRepository implements UserInterface
                 //Update pin
                 updateUserMetaValue($user->id, 'mpin', bcrypt($data['mpin']));
 
+                //event for sending mail of password reset confirmation
+                event(new \App\Events\Frontend\Auth\UserChangePin($user));
+
                 $response['status'] = 200;
                 $response['message'] = trans('auth.forgot_mpin.mpin_update_success');
             } else {
@@ -843,6 +866,7 @@ class UserRepository implements UserInterface
                 $response['message'] = trans('auth.forgot_mpin.invalid_otp');
             }
         } catch (\Exception $ex) {
+            dd($ex);
             Log::error($ex);
             $response['status'] = 403;
             $response['message'] = trans('auth.reset_pin_failed');

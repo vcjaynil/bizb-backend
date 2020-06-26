@@ -2,15 +2,17 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Forgot pin OTP') }}</div>
+                <div class="card-header">{{trans('email.forgot_pin.title')}}</div>
 
                 <div class="card-body">
 
-                    <p>{{trans('email.forgot_pin.greetings',['name' => $user->name])}}</p>
+                    <p>{{trans('email.greetings',['name' => $user->name])}}</p>
                     <p>{{trans('email.forgot_pin.text_1')}}</p><br>
                     <p>{{trans('email.forgot_pin.text_2')}}</p><br>
                     <p>{{trans('email.forgot_pin.text_3')}}</p>
                     <button>{!! $otp !!}</button>
+                    <br>
+                    <button>{{trans('email.forgot_pin.reset_button')}}</button>
 
                 </div>
                 <div class="card-footer">

@@ -2,6 +2,8 @@
 
 namespace App\Listeners\Frontend\Auth;
 
+use App\Jobs\SendChangePasswordDetail;
+use App\Jobs\SendChangePinDetail;
 use App\Jobs\SendUserConfirmation;
 use App\Jobs\SendUserForgotPinOtp;
 use App\Jobs\SendUserWelcome;
@@ -39,6 +41,24 @@ class UserEventListener
         \Log::info('User Confirmation job dispatched for: ' . $user['name']);
     }
 
+    public function onNeedsChangePasswordDetail($event)
+    {
+        $user = $event->user;
+        dispatch(new SendChangePasswordDetail(
+            $user
+        ));
+        \Log::info('User Change Password Confirmation job dispatched for: ' . $user['name']);
+    }
+
+    public function onNeedsChangePinDetail($event)
+    {
+        $user = $event->user;
+        dispatch(new SendChangePinDetail(
+            $user
+        ));
+        \Log::info('User Change Password Confirmation job dispatched for: ' . $user['name']);
+    }
+
     public function onNeedsForgotMpinOpt($event)
     {
         $user = $event->user;
@@ -64,6 +84,16 @@ class UserEventListener
         $events->listen(
             \App\Events\Frontend\Auth\UserForgotPin::class,
             'App\Listeners\Frontend\Auth\UserEventListener@onNeedsForgotMpinOpt'
+        );
+
+        $events->listen(
+            \App\Events\Frontend\Auth\UserChangePassword::class,
+            'App\Listeners\Frontend\Auth\UserEventListener@onNeedsChangePasswordDetail'
+        );
+
+        $events->listen(
+            \App\Events\Frontend\Auth\UserChangePin::class,
+            'App\Listeners\Frontend\Auth\UserEventListener@onNeedsChangePinDetail'
         );
     }
 

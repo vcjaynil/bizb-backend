@@ -19,7 +19,7 @@ class SendForgotPinOtpEmail extends Mailable
      * @param $user
      * @param $otp
      */
-    public function __construct($user,$otp)
+    public function __construct($user, $otp)
     {
         $this->user = $user;
         $this->otp = $otp;
@@ -36,8 +36,8 @@ class SendForgotPinOtpEmail extends Mailable
         return $this->subject($this->subject)
             ->view('frontend.mail.forgot_pin_otp')
             ->with([
-                'user'  => $this->user,
-                'otp'   => $this->otp
+                'user' => $this->user,
+                'otp' => $this->otp
             ]);
     }
 }

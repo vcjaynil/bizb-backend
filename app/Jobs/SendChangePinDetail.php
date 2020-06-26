@@ -2,30 +2,28 @@
 
 namespace App\Jobs;
 
-use App\Mail\Frontend\User\SendForgotPasswordOtpEmail;
+use App\Mail\Frontend\User\SendChangePinDetailEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class SendForgotPasswordOtp implements ShouldQueue
+class SendChangePinDetail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $user;
-    protected $otp;
+    private $user;
 
     /**
-     * SendForgotPasswordOtp constructor.
+     * SendChangePinDetail constructor.
      * @param $user
-     * @param $otp
      */
-    public function __construct($user, $otp)
+    public function __construct($user)
     {
         $this->user = $user;
-        $this->otp = $otp;
     }
 
     /**
@@ -36,7 +34,8 @@ class SendForgotPasswordOtp implements ShouldQueue
     public function handle()
     {
         try {
-            $email = new SendForgotPasswordOtpEmail($this->user, $this->otp);
+
+            $email = new SendChangePinDetailEmail($this->user);
 
             Mail::to($this->user['email'])->queue($email);
         } catch (\Exception $ex) {

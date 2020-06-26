@@ -25,10 +25,10 @@ class SendUserForgotPinOtp implements ShouldQueue
      * @param $user
      * @param $otp
      */
-    public function __construct($user,$otp)
+    public function __construct($user, $otp)
     {
         $this->user = $user;
-        $this->otp  = $otp;
+        $this->otp = $otp;
     }
 
     /**
@@ -38,8 +38,12 @@ class SendUserForgotPinOtp implements ShouldQueue
      */
     public function handle()
     {
-        $email = new SendForgotPinOtpEmail($this->user,$this->otp);
+        try {
+            $email = new SendForgotPinOtpEmail($this->user, $this->otp);
 
-        Mail::to($this->user['email'])->queue($email);
+            Mail::to($this->user['email'])->queue($email);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+        }
     }
 }

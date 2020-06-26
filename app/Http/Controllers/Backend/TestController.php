@@ -34,4 +34,18 @@ class TestController extends Controller
     {
         throw new \Exception('My first Sentry error!');
     }
+
+    public function emailTemplate(){
+        try{
+
+            $user = User::find(3);
+
+            $otp = 1234;
+
+            return view('frontend.email.welcome',compact('user','otp'));
+        } catch (\Exception $ex) {
+            dd($ex);
+        }
+
+    }
 }

@@ -19,7 +19,7 @@ class UserConfirmEmail extends Mailable
      * @param $user
      * @param $otp
      */
-    public function __construct($user,$otp)
+    public function __construct($user, $otp)
     {
         $this->user = $user;
         $this->otp = $otp;

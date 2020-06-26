@@ -37,7 +37,7 @@ class SendUserWelcomeEmail extends Mailable
         return $this->subject($this->subject)
             ->view('frontend.mail.welcome')
             ->with([
-                'user'  => $this->user
+                'user' => $this->user
             ]);
     }
 }

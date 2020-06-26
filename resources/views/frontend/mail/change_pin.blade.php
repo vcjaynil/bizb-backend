@@ -2,17 +2,13 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{trans('email.email_verification.title')}}</div>
-
+                <div class="card-header">{{trans('email.pin_reset_confirmation.title')}}</div>
                 <div class="card-body">
-
                     <p>{{trans('email.greetings',['name' => $user->name])}}</p>
-                    <p>{{trans('email.email_verification.text_1')}}</p><br>
-                    <p>{{trans('email.email_verification.text_2')}}</p><br>
-                    <p>{{trans('email.email_verification.text_3')}}</p><br>
-                    <p>{{trans('email.email_verification.text_4')}}</p>
-
-                    <button>{!! $otp !!}</button>
+                    <p>{{trans('email.pin_reset_confirmation.text_1')}}</p><br>
+                    <p>{{trans('email.pin_reset_confirmation.text_2')}}</p><br>
+                    <p>{{trans('email.pin_reset_confirmation.text_3')}}</p>
+                    <button>{{trans('email.pin_reset_confirmation.change_pin_button')}}</button>
                 </div>
                 <div class="card-footer">
                     <p>{!! trans('email.footer_label.text_1') !!}</p><br>
